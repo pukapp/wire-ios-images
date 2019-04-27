@@ -75,7 +75,7 @@
     return operations;
 }
 
-- (NSOperation *)imageOperationForFormat:(ZMImageFormat)format
+- (NSOperation *)imageOperationForFormat:(__unused ZMImageFormat)format
                               imageOwner:(id<ZMImageOwner>)imageOwner
                            loadOperation:(ZMImageLoadOperation *)loadOperation
 {

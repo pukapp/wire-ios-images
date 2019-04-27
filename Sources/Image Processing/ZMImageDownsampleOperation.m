@@ -73,8 +73,11 @@ static void bitmapContextReleaseData(void *releaseInfo, void *data);
             return ZMImageDownsampleTypeSmallProfile;
             break;
             
-        case ZMImageFormatInvalid:
         case ZMImageFormatOriginal:
+            return ZMImageDownsampleTypeOriginal;
+            break;
+            
+        case ZMImageFormatInvalid:
         default:
             RequireString(NO, "Unknown image format for downsampling: %ld", (long)format);
             break;
@@ -96,6 +99,10 @@ static void bitmapContextReleaseData(void *releaseInfo, void *data);
             
         case ZMImageDownsampleTypeSmallProfile:
             return ZMImageFormatProfile;
+            break;
+            
+        case ZMImageDownsampleTypeOriginal:
+            return ZMImageFormatOriginal;
             break;
             
         case ZMImageDownsampleTypeInvalid:
@@ -144,6 +151,9 @@ static void bitmapContextReleaseData(void *releaseInfo, void *data);
         case ZMImageDownsampleTypeSmallProfile:
             typeName = @"SmallProfile";
             break;
+        case ZMImageDownsampleTypeOriginal:
+            typeName = @"original";
+            break;
         case ZMImageDownsampleTypeInvalid:
             break;
     }
@@ -165,12 +175,14 @@ static void bitmapContextReleaseData(void *releaseInfo, void *data);
     CGSize imageSize = CGSizeMake(CGImageGetWidth(image), CGImageGetHeight(image));
 
     NSString *mimeType = self.loadOperation.computedImageProperties.mimeType;
-    if ([self shouldScale:image]) {
-        imageSize = [self scaleImage:image];
-    }
-    else if([self originalImageByteSizeTooBig])
-    {
-        mimeType = [self recompressImage:image];
+    if (_format != ZMImageFormatOriginal) {
+        if ([self shouldScale:image]) {
+            imageSize = [self scaleImage:image];
+        }
+        else if([self originalImageByteSizeTooBig])
+        {
+            mimeType = [self recompressImage:image];
+        }
     }
     if (self.downsampleImageData == nil) {
         if(image == self.loadOperation.CGImage) {
@@ -254,6 +266,8 @@ static void bitmapContextReleaseData(void *releaseInfo, void *data);
             return 1024;
         case ZMImageDownsampleTypeSmallProfile:
             return 1024 * 1024; // Don't care about this
+        case ZMImageDownsampleTypeOriginal:
+            return 5 * 1024 * 1024;
         case ZMImageDownsampleTypeInvalid:
             break;
     }
@@ -270,6 +284,8 @@ static void bitmapContextReleaseData(void *releaseInfo, void *data);
             return 30;
         case ZMImageDownsampleTypeSmallProfile:
             return 280;
+        case ZMImageDownsampleTypeOriginal:
+            return 2048;
         case ZMImageDownsampleTypeInvalid:
             break;
     }
@@ -285,6 +301,8 @@ static void bitmapContextReleaseData(void *releaseInfo, void *data);
             return 0;
         case ZMImageDownsampleTypeSmallProfile:
             return 0.7;
+        case ZMImageDownsampleTypeOriginal:
+            return 1;
         case ZMImageDownsampleTypeInvalid:
             break;
     }
@@ -359,6 +377,8 @@ static void bitmapContextReleaseData(void *releaseInfo, void *data);
         case ZMImageDownsampleTypeSmallProfile:
         case ZMImageDownsampleTypePreview:
             return YES;
+        case ZMImageDownsampleTypeOriginal:
+            return YES;
         case ZMImageDownsampleTypeInvalid:
             break;
     }
@@ -372,6 +392,7 @@ static void bitmapContextReleaseData(void *releaseInfo, void *data);
             return YES;
         case ZMImageDownsampleTypeMedium:
         case ZMImageDownsampleTypePreview:
+        case ZMImageDownsampleTypeOriginal:
             return NO;
         case ZMImageDownsampleTypeInvalid:
             break;

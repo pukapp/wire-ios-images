@@ -30,6 +30,7 @@ typedef NS_ENUM (int16_t, ZMImageDownsampleType) {
     ZMImageDownsampleTypePreview,
     ZMImageDownsampleTypeMedium,
     ZMImageDownsampleTypeSmallProfile,
+    ZMImageDownsampleTypeOriginal
 };
 
 @protocol ZMImageDownsampleOperationProtocol <NSObject>
