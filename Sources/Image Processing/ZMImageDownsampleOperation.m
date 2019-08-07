@@ -179,7 +179,7 @@ static void bitmapContextReleaseData(void *releaseInfo, void *data);
         if ([self shouldScale:image]) {
             imageSize = [self scaleImage:image];
         }
-        else if([self originalImageByteSizeTooBig])
+        if ([self originalImageByteSizeTooBig])
         {
             mimeType = [self recompressImage:image];
         }
